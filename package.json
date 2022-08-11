@@ -1,0 +1,52 @@
+{
+	"name": "meta-comments",
+	"displayName": "meta-comments",
+	"description": "Highlight MARK and other comments",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.70.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:meta-comments.helloWorld"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "meta-comments.helloWorld",
+				"title": "Hello World"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "./node_modules/.bin/tsc -p ./",
+		"watch": "./node_modules/.bin/tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "./node_modules/.bin/eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/glob": "7.2.0",
+		"@types/mocha": "9.1.1",
+		"@types/node": "16.x",
+		"@types/vscode": "1.70.0",
+		"@typescript-eslint/eslint-plugin": "5.31.0",
+		"@typescript-eslint/parser": "5.31.0",
+		"@vscode/test-electron": "2.1.5",
+		"eslint": "8.20.0",
+		"eslint-config-prettier": "8.5.0",
+		"eslint-config-strictest": "0.4.0",
+		"eslint-plugin-deprecation": "1.3.2",
+		"eslint-plugin-mocha": "10.1.0",
+		"eslint-plugin-prettier": "4.2.1",
+		"eslint-plugin-unicorn": "43.0.2",
+		"glob": "8.0.3",
+		"mocha": "10.0.0",
+		"prettier": "2.7.1",
+		"typescript": "4.7.4"
+	}
+}
