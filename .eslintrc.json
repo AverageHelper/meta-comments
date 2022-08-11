@@ -11,17 +11,17 @@
 		"plugin:@typescript-eslint/recommended-requiring-type-checking",
 		"plugin:prettier/recommended"
 	],
-	"plugins": ["prettier", "unicorn", "@typescript-eslint", "deprecation"],
+	"plugins": ["prettier", "promise", "unicorn", "@typescript-eslint", "deprecation"],
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
-		"project": "./tsconfig.prod.json",
+		"project": "./tsconfig.json",
 		"tsconfigRootDir": "./"
 	},
 	"rules": {
 		"deprecation/deprecation": "warn",
 		"prettier/prettier": "warn",
 		"no-constant-condition": "warn",
-		"no-console": "warn",
+		"no-console": "off",
 		"no-dupe-else-if": "warn",
 		"consistent-return": "off", // TS handles this
 		"no-duplicate-imports": "off", // typescript-eslint handles this
@@ -46,45 +46,11 @@
 		"unicorn/catch-error-name": ["warn", { "name": "error" }],
 		"unicorn/import-index": ["error", { "ignoreImports": true }]
 	},
-
 	"overrides": [
 		{
-			"files": ["./*.ts", "src/**/*.test.ts", "src/**/__mocks__/**/*.ts"],
-			"extends": ["plugin:jest/recommended"],
-			"plugins": ["jest"],
-			"parserOptions": {
-				"project": "./tsconfig.test.json"
-			},
-			"env": {
-				"jest": true
-			},
+			"files": ["src/test/**"],
 			"rules": {
-				"prettier/prettier": "warn",
-				"max-nested-callbacks": "off" // unit tests involve a lot of nested callbacks
-			}
-		},
-		{
-			"files": ["tests/**/*.ts"],
-			"extends": ["plugin:mocha/recommended"],
-			"plugins": ["mocha"],
-			"parserOptions": {
-				"project": "./tsconfig.e2e.json"
-			},
-			"rules": {
-				"prettier/prettier": "warn",
-				"max-nested-callbacks": "off", // unit tests involve a lot of nested callbacks
-				"func-names": "off", // unnamed functions are common in Mocha
-				"@typescript-eslint/no-invalid-this": "off" // mocha exposes test metadata in `this`
-			}
-		},
-		{
-			"files": ["*.js", "*.cjs"],
-			"parser": "null"
-		},
-		{
-			"files": ["database/migrations/*.ts"],
-			"rules": {
-				"unicorn/filename-case": "off"
+				"unicorn/no-process-exit": "off" // to exit the test suite in case of catastrophic failure, or something
 			}
 		}
 	]
