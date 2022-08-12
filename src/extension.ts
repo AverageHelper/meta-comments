@@ -79,6 +79,10 @@ function decorate(editor: vscode.TextEditor): void {
 		return;
 	}
 
+	// The user might want to bold the whole thing, and not just after the `MARK:` part.
+	// I'm torn, so I'll let them choose.
+	const shouldBoldCommentStart = get("shouldBoldCommentStart");
+
 	// FIXME: There's got to be a more efficient way to do this
 	for (const [idx, line] of lines.entries()) {
 		// For each line...
@@ -90,9 +94,6 @@ function decorate(editor: vscode.TextEditor): void {
 			if (end !== undefined) {
 				let boldStart: number;
 
-				// The user might want to bold the whole thing, and not just after the `MARK:` part.
-				// I'm torn, so I'll let them choose.
-				const shouldBoldCommentStart = get("shouldBoldCommentStart");
 				if (shouldBoldCommentStart) {
 					// bold the whole comment
 					boldStart = bolded.index;
