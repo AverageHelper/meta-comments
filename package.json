@@ -31,6 +31,19 @@
 					"type": "boolean",
 					"default": false,
 					"description": "Whether the comment start (`//`) gets bolded too."
+				},
+				"meta-comments.blockColor": {
+					"type": "string",
+					"enum": [
+						"editor.inactiveSelectionBackground",
+						"editor.selectionBackground"
+					],
+					"enumDescriptions": [
+						"A gray-ish color",
+						"A blue-ish color"
+					],
+					"default": "editor.inactiveSelectionBackground",
+					"description": "The background color to use between heavy block (`---`) marks."
 				}
 			}
 		}

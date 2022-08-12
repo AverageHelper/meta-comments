@@ -18,6 +18,16 @@ import { get, reloadConfig } from "./config.js";
 // MARK: - Wrap both sides of the line with two marks
 // MARK: -
 
+// MARK: ---
+
+// Use three hyphens to highlight an area
+
+// MARK: Bolded marks work here
+
+// MARK: - Lined marks also work!
+
+// MARK: ---
+
 {
 	// MARK: marks work inside of blocks as well
 
@@ -33,17 +43,12 @@ import { get, reloadConfig } from "./config.js";
 
 // These marks appear in VS Code's Outline, under "marks"
 
-// TODO: Future work
-// - Tweak line styling
-// - Marks with triple-hyphens (---) by default have a line, but when paired
-//   with a second such mark, form a "block" that displays distinctly
-//   from surrounding code.
-
-// MARK: -
+// MARK: ---
 
 const boldedMark = /(\/\/\s*MARK:\s+)/u;
 const linedMark = /(\/\/\s*MARK:\s+-)/u;
-const markContent = /(\/\/\s*MARK:\s+-\s+)(.+)/u;
+const blockMark = /(\/\/\s*MARK:\s+---)/u;
+const markContent = /(\/\/\s*MARK:\s+-+\s+)(.+)/u;
 
 const lineNumberColor = new vscode.ThemeColor("editorLineNumber.foreground");
 
@@ -60,12 +65,25 @@ const overlined = vscode.window.createTextEditorDecorationType({
 	borderColor: lineNumberColor
 });
 
-// MARK: - Actions
+let block = vscode.window.createTextEditorDecorationType({
+	isWholeLine: true,
+	backgroundColor: new vscode.ThemeColor(get("blockColor"))
+});
+
+// MARK: --- Actions
 
 function decorate(editor: vscode.TextEditor): void {
+	// Dispose of old config-dependent decorations and re-re-create based on new config
+	block.dispose();
+	block = vscode.window.createTextEditorDecorationType({
+		isWholeLine: true,
+		backgroundColor: new vscode.ThemeColor(get("blockColor"))
+	});
+
 	// Prepare and register decorations
 	const boldedDecorations: Array<vscode.DecorationOptions> = [];
 	const linedDecorations: Array<vscode.DecorationOptions> = [];
+	const blockMarkerLines: Array<number> = [];
 
 	const sourceCode = editor.document.getText();
 	const lines = sourceCode.split("\n");
@@ -122,10 +140,41 @@ function decorate(editor: vscode.TextEditor): void {
 				linedDecorations.push({ range });
 			}
 		}
+
+		// MARK: Block
+		const blocked = line.match(blockMark);
+		if (blocked?.index !== undefined) {
+			blockMarkerLines.push(idx); // keep track of the line number
+		}
 	}
 
-	editor.setDecorations(overlined, linedDecorations);
+	// - Create line pairs from block markers
+	const pairs: Array<[number, number]> = [];
+	let prevLine: number | undefined;
+	for (const currLine of blockMarkerLines) {
+		if (prevLine === undefined) {
+			// first part of a pair...
+			prevLine = currLine;
+		} else {
+			// we've made a pair!
+			pairs.push([prevLine, currLine]);
+			prevLine = undefined;
+		}
+	}
+
+	// - For each pair, decorate a wide background between them
+	const blockedDecorations: Array<vscode.DecorationOptions> = [];
+	for (const [line1, line2] of pairs) {
+		const range = new vscode.Range(
+			new vscode.Position(line1, 0),
+			new vscode.Position(line2 - 1, 0) // overline the closing mark
+		);
+		blockedDecorations.push({ range });
+	}
+
+	editor.setDecorations(block, blockedDecorations);
 	editor.setDecorations(bolded, boldedDecorations);
+	editor.setDecorations(overlined, linedDecorations);
 }
 
 function decorateAllEditors(context: string): void {

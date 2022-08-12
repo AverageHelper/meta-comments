@@ -1,14 +1,22 @@
 import * as vscode from "vscode";
 
+// MARK: ---
 // These defaults should match the definition
 // given in `contributes.configuration` in package.json
+
+type BlockColor = "editor.inactiveSelectionBackground" | "editor.selectionBackground";
+
 const DEFAULT_CONFIG = {
 	/** We shouldn't deal with documents larger than this */
 	lineLimit: 10000,
 
 	/** Whether to also bold the comment start (`//`) */
-	shouldBoldCommentStart: false
+	shouldBoldCommentStart: false,
+
+	/** The background color between heavy block (`---`) marks */
+	blockColor: "editor.inactiveSelectionBackground" as BlockColor
 };
+// MARK: ---
 
 // MARK: - Functions
 
