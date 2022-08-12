@@ -1,27 +1,92 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import vscode from "vscode";
+import * as vscode from "vscode";
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext): void {
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "meta-comments" is now active!');
+// MARK: - Colors
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand("meta-comments.helloWorld", async () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		await vscode.window.showInformationMessage("Hello World from meta-comments!");
-	});
+const lineNumberColor = new vscode.ThemeColor("editorLineNumber.foreground");
+// const activeLineNumberColor = new vscode.ThemeColor("editorLineNumber.activeForeground");
 
-	context.subscriptions.push(disposable);
+const borderedLine = vscode.window.createTextEditorDecorationType({
+	isWholeLine: true,
+	fontWeight: "bold",
+	border: `
+		border: none;
+		border-top: 1.5pt solid;
+		margin-top: 0;
+		`,
+	borderColor: lineNumberColor
+});
+
+function decorate(editor: vscode.TextEditor): void {
+	const sourceCode = editor.document.getText();
+	const regex = /(\/\/\s*MARK: -)/u;
+
+	const decorations: Array<vscode.DecorationOptions> = [];
+
+	const lines = sourceCode.split("\n");
+	for (const [idx, line] of lines.entries()) {
+		const match = line.match(regex);
+
+		if (match?.index !== undefined) {
+			const end = match[1];
+			if (end === undefined) continue;
+			const range = new vscode.Range(
+				new vscode.Position(idx, 0),
+				new vscode.Position(idx, match.index + end.length)
+			);
+			decorations.push({ range });
+		}
+	}
+
+	editor.setDecorations(borderedLine, decorations);
 }
 
-// this method is called when your extension is deactivated
+// MARK: - Start
+
+export function activate(context: vscode.ExtensionContext): void {
+	console.log("Loaded!");
+
+	// Decorate editors on start
+	console.log(
+		`[activate] There are ${vscode.window.visibleTextEditors.length} text editors visible`
+	);
+	vscode.window.visibleTextEditors.forEach(decorate);
+
+	context.subscriptions.push(
+		vscode.workspace.onDidChangeTextDocument(event => {
+			// on every text change...
+			const openEditor = vscode.window.visibleTextEditors //
+				.find(editor => editor.document.uri === event.document.uri);
+			console.log(
+				`[onDidChangeTextDocument] There are ${vscode.window.visibleTextEditors.length} text editors visible`
+			);
+
+			if (openEditor) decorate(openEditor);
+		}),
+		vscode.workspace.onDidOpenTextDocument(event => {
+			// on open...
+			const openEditor = vscode.window.visibleTextEditors //
+				.find(editor => editor.document.uri === event.uri);
+			console.log(
+				`[onDidOpenTextDocument] There are ${vscode.window.visibleTextEditors.length} text editors visible`
+			);
+
+			if (openEditor) decorate(openEditor);
+		}),
+		vscode.window.onDidChangeActiveTextEditor(event => {
+			// on tab change...
+			const openEditor = vscode.window.visibleTextEditors //
+				.find(editor => editor.document.uri === event?.document.uri);
+			console.log(
+				`[onDidChangeActiveTextEditor] There are ${vscode.window.visibleTextEditors.length} text editors visible`
+			);
+
+			if (openEditor) decorate(openEditor);
+		})
+	);
+}
+
 export function deactivate(): void {
-	//
+	// this method is called when your extension is deactivated
 }

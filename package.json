@@ -10,17 +10,12 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:meta-comments.helloWorld"
+		"onLanguage:javascript",
+		"onLanguage:swift",
+		"onLanguage:typescript",
+		"onStartupFinished"
 	],
 	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "meta-comments.helloWorld",
-				"title": "Hello World"
-			}
-		]
-	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "./node_modules/.bin/tsc -p ./",
