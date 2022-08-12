@@ -7,7 +7,7 @@
 		"vscode": "^1.70.0"
 	},
 	"categories": [
-		"Formatters"
+		"Visualization"
 	],
 	"activationEvents": [
 		"onLanguage:javascript",
