@@ -18,6 +18,23 @@
 	"capabilities": {
 		"documentSymbolProvider": true
 	},
+	"contributes": {
+		"configuration": {
+			"title": "meta-comments",
+			"properties": {
+				"meta-comments.lineLimit": {
+					"type": "integer",
+					"default": 10000,
+					"description": "The maximum number of lines in a file before we consider searching it for mark comments."
+				},
+				"meta-comments.shouldBoldCommentStart": {
+					"type": "boolean",
+					"default": false,
+					"description": "Whether the comment start (`//`) gets bolded too."
+				}
+			}
+		}
+	},
 	"main": "./out/extension.js",
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

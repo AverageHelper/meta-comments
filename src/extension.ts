@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
+import { get, reloadConfig } from "./config.js";
 
 // MARK: - TEST AREA
 
@@ -40,8 +41,6 @@ import * as vscode from "vscode";
 
 // MARK: -
 
-const LINE_LIMIT = 10000; // We shouldn't deal with documents larger than this
-
 const boldedMark = /(\/\/\s*MARK:\s+)/u;
 const linedMark = /(\/\/\s*MARK:\s+-)/u;
 const markContent = /(\/\/\s*MARK:\s+-\s+)(.+)/u;
@@ -72,9 +71,10 @@ function decorate(editor: vscode.TextEditor): void {
 	const lines = sourceCode.split("\n");
 
 	// Efficiency workaround: Avoid searching very large files
-	if (lines.length > LINE_LIMIT) {
+	const lineLimit = get("lineLimit");
+	if (lines.length > lineLimit) {
 		void vscode.window.showWarningMessage(
-			`[meta-comments] File ${editor.document.fileName} is ${lines.length} lines long, more than our ${LINE_LIMIT} line limit for finding markers.`
+			`[meta-comments] File ${editor.document.fileName} is ${lines.length} lines long, more than our ${lineLimit} line limit for finding markers.`
 		);
 		return;
 	}
@@ -83,24 +83,37 @@ function decorate(editor: vscode.TextEditor): void {
 	for (const [idx, line] of lines.entries()) {
 		// For each line...
 
+		// MARK: Bold text
 		const bolded = line.match(boldedMark);
 		if (bolded?.index !== undefined) {
-			// Bold text
 			const end = bolded[1];
 			if (end !== undefined) {
-				const text = line.slice(bolded.index);
-				const indexOfMark = text.indexOf("MARK:"); // avoid bolding the comment start
+				let boldStart: number;
+
+				// The user might want to bold the whole thing, and not just after the `MARK:` part.
+				// I'm torn, so I'll let them choose.
+				const shouldBoldCommentStart = get("shouldBoldCommentStart");
+				if (shouldBoldCommentStart) {
+					// bold the whole comment
+					boldStart = bolded.index;
+				} else {
+					// bold only after the comment start
+					const text = line.slice(bolded.index);
+					const indexOfMark = text.indexOf("MARK:"); // avoid bolding the comment start
+					boldStart = bolded.index + indexOfMark;
+				}
+
 				const range = new vscode.Range(
-					new vscode.Position(idx, bolded.index + indexOfMark),
+					new vscode.Position(idx, boldStart),
 					new vscode.Position(idx, line.length) // rest of the line
 				);
 				boldedDecorations.push({ range });
 			}
 		}
 
+		// MARK: Horizontal rule
 		const lined = line.match(linedMark);
 		if (lined?.index !== undefined) {
-			// Horizontal rule
 			const end = lined[1];
 			if (end !== undefined) {
 				const range = new vscode.Range(
@@ -145,9 +158,10 @@ const symbolProvider: vscode.DocumentSymbolProvider = {
 	provideDocumentSymbols(document, canceler) {
 		// Efficiency workaround: Avoid searching very large files
 		const lineCount = document.lineCount;
-		if (lineCount > LINE_LIMIT) {
+		const lineLimit = get("lineLimit");
+		if (lineCount > lineLimit) {
 			void vscode.window.showWarningMessage(
-				`[meta-comments] File ${document.fileName} is ${lineCount} lines long, more than our ${LINE_LIMIT} line limit for finding markers.`
+				`[meta-comments] File ${document.fileName} is ${lineCount} lines long, more than our ${lineLimit} line limit for finding markers.`
 			);
 			return [];
 		}
@@ -162,9 +176,9 @@ const symbolProvider: vscode.DocumentSymbolProvider = {
 		for (const [idx, line] of lines.entries()) {
 			// For each line...
 
+			// MARK: Mark contents
 			const mark = line.match(markContent);
 			if (mark?.index !== undefined) {
-				// Mark contents
 				const text = mark[0];
 				const end = mark[1];
 				if (text !== undefined && end !== undefined) {
@@ -199,6 +213,7 @@ const symbolProvider: vscode.DocumentSymbolProvider = {
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
 	console.log("Loaded!");
+	reloadConfig("activate");
 
 	// Decorate editors on start
 	decorateAllEditors("activate");
@@ -222,6 +237,14 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 			// on tab change...
 			if (!event?.document.uri) return;
 			decorateEditorWithUri(event.document.uri, "onDidChangeActiveTextEditor");
+		}),
+		vscode.window.onDidChangeVisibleTextEditors(() => {
+			decorateAllEditors("onDidChangeVisibleTextEditors");
+		}),
+
+		// Load new config
+		vscode.workspace.onDidChangeConfiguration(() => {
+			reloadConfig("onDidChangeConfiguration");
 		})
 	);
 }
