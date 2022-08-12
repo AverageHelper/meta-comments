@@ -7,7 +7,7 @@
 		"vscode": "^1.70.0"
 	},
 	"categories": [
-		"Other"
+		"Formatters"
 	],
 	"activationEvents": [
 		"onLanguage:javascript",
@@ -15,6 +15,9 @@
 		"onLanguage:typescript",
 		"onStartupFinished"
 	],
+	"capabilities": {
+		"documentSymbolProvider": true
+	},
 	"main": "./out/extension.js",
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
