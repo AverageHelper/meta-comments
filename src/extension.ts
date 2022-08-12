@@ -33,9 +33,9 @@ import * as vscode from "vscode";
 // These marks appear in VS Code's Outline, under "marks"
 
 // TODO: Future work
-// - Don't bold the comment start, start bolding on the word MARK (match Xcode)
+// - Don't bold the comment start, start bolding on the word MARK (match Xcode's behavior)
 // - Tweak line styling
-// - Marks with triple-hyphens (---) by default have a, but when paired
+// - Marks with triple-hyphens (---) by default have a line, but when paired
 //   with a second such mark, form a "block" that displays distinctly
 //   from surrounding code.
 
@@ -115,6 +115,8 @@ function decorate(editor: vscode.TextEditor): void {
 	editor.setDecorations(overlined, linedDecorations);
 	editor.setDecorations(bolded, boldedDecorations);
 }
+
+// MARK: Helpers
 
 function decorateAllEditors(context: string): void {
 	console.log(`[${context}] ${editorCount()} text editors are visible`);
