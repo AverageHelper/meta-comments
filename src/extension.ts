@@ -192,7 +192,6 @@ const symbolProvider: vscode.DocumentSymbolProvider = {
 		// Provide symbols to VS Code
 		return markTokens.map(token => {
 			const location = new vscode.Location(document.uri, token.range);
-			// return new vscode.DocumentSymbol(token.text, "", vscode.SymbolKind.Key, token.range, token.range);
 			return new vscode.SymbolInformation(token.text, vscode.SymbolKind.Key, "", location);
 		});
 	}
