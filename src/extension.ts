@@ -92,12 +92,10 @@ function decorate(editor: vscode.TextEditor): void {
 		if (bolded?.index !== undefined) {
 			const end = bolded[1];
 			if (end !== undefined) {
-				let boldStart: number;
+				// bold the whole comment
+				let boldStart = bolded.index;
 
-				if (shouldBoldCommentStart) {
-					// bold the whole comment
-					boldStart = bolded.index;
-				} else {
+				if (!shouldBoldCommentStart) {
 					// bold only after the comment start
 					const text = line.slice(bolded.index);
 					const indexOfMark = text.indexOf("MARK:"); // avoid bolding the comment start
