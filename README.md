@@ -1,71 +1,55 @@
-# meta-comments README
-
-This is the README for your extension "meta-comments". After writing up a brief description, we recommend including the following sections.
+# meta-comments
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Xcode has this really neat organizational feature for some languages where specially-formatted comments will decorate the editor with dividers and bold formatting. This extension brings some of that functionality to VS Code.
 
-For example if there is an image subfolder under your extension project workspace:
+![Marked headings, divided markings, and block markings](/images/demo.gif)
 
-\!\[feature X\]\(images/feature-x.png\)
+These comments can make clear to readers on _any_ IDE that something is going on. With this extension, VS Code will parse these comments and create visual editor decorations.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+Plain marks are a soft visual content divider:
 
-## Requirements
+```ts
+// MARK: Some Text
+```
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+![Marked Headings](/images/mark-plain.png)
+
+Divided marks get an overline, and their (optional) text appears in the Outline view:
+
+```ts
+// MARK: - Optional Text
+```
+
+![Divided Marked Headings and entry in the Outline view](/images/mark-divider.png)
+
+Marked blocks color the editor background between them. Their text also appears in the Outline panel:
+
+```ts
+// MARK: --- Optional Text
+
+	(...)
+
+// MARK: ---
+```
+
+![Marked Block and entry in the Outline view](/images/mark-block.png)
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
+* `meta-comments.blockColor`: The background color to use between heavy block (`---`) marks.
+* `meta-comments.lineLimit`: The maximum number of lines in a file before we consider searching it for mark comments.
+* `meta-comments.shouldBoldCommentStart`: Set to `true` to bold the comment start (the `//` part) along with the rest of the line.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+See [CHANGELOG.md](/CHANGELOG.md).
 
-### 1.0.0
+## Known Issues
 
-Initial release of ...
+PRs are welcome and appreciated to help solve the following or any other issues you may have:
 
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+- Highlighted blocks (using `MARK: ---`) have a visible underline.

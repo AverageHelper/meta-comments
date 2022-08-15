@@ -1,8 +1,11 @@
 {
 	"name": "meta-comments",
 	"displayName": "meta-comments",
-	"description": "Highlight MARK and other comments",
-	"version": "0.0.1",
+	"description": "Highlight MARK comments",
+	"version": "1.0.0",
+	"repository": {
+		"url": "https://github.com/AverageHelper/meta-comments"
+	},
 	"engines": {
 		"vscode": "^1.70.0"
 	},
@@ -22,16 +25,6 @@
 		"configuration": {
 			"title": "meta-comments",
 			"properties": {
-				"meta-comments.lineLimit": {
-					"type": "integer",
-					"default": 10000,
-					"description": "The maximum number of lines in a file before we consider searching it for mark comments."
-				},
-				"meta-comments.shouldBoldCommentStart": {
-					"type": "boolean",
-					"default": false,
-					"description": "Whether the comment start (`//`) gets bolded too."
-				},
 				"meta-comments.blockColor": {
 					"type": "string",
 					"enum": [
@@ -44,6 +37,16 @@
 					],
 					"default": "editor.inactiveSelectionBackground",
 					"description": "The background color to use between heavy block (`---`) marks."
+				},
+				"meta-comments.lineLimit": {
+					"type": "integer",
+					"default": 10000,
+					"description": "The maximum number of lines in a file before we consider searching it for mark comments."
+				},
+				"meta-comments.shouldBoldCommentStart": {
+					"type": "boolean",
+					"default": false,
+					"description": "Whether the comment start (`//`) gets bolded too."
 				}
 			}
 		}
