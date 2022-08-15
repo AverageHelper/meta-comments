@@ -172,6 +172,7 @@ function decorate(editor: vscode.TextEditor): void {
 		blockedDecorations.push({ range });
 	}
 
+	// Inform VS Code
 	editor.setDecorations(block, blockedDecorations);
 	editor.setDecorations(bolded, boldedDecorations);
 	editor.setDecorations(overlined, linedDecorations);
@@ -200,7 +201,13 @@ interface MarkTokens {
 	range: vscode.Range;
 }
 
-const allKnownLanguages = vscode.languages.getLanguages();
+async function supportedLanguages(): Promise<Array<string>> {
+	const lang = ["javascript", "swift", "typescript"]; // TODO: Get this from config
+	if (lang.includes("*")) {
+		return await vscode.languages.getLanguages();
+	}
+	return lang;
+}
 
 const symbolProvider: vscode.DocumentSymbolProvider = {
 	provideDocumentSymbols(document, canceler) {
@@ -268,7 +275,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
 	context.subscriptions.push(
 		// Provide symbols to path ribbon
-		vscode.languages.registerDocumentSymbolProvider(await allKnownLanguages, symbolProvider, {
+		vscode.languages.registerDocumentSymbolProvider(await supportedLanguages(), symbolProvider, {
 			label: "marks"
 		}),
 
