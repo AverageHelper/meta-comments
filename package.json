@@ -2,6 +2,7 @@
 	"name": "meta-comments",
 	"displayName": "meta-comments",
 	"description": "Highlight MARK comments",
+	"publisher": "average",
 	"version": "1.0.0",
 	"repository": {
 		"url": "https://github.com/AverageHelper/meta-comments"
