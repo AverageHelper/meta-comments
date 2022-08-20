@@ -80,6 +80,12 @@ function decorate(editor: vscode.TextEditor): void {
 		backgroundColor: new vscode.ThemeColor(get("blockColor"))
 	});
 
+	// Do nothing if this file isn't in a language we support
+	if (!languages.includes(editor.document.languageId)) {
+		console.log(`[decorate] Skipping decorations for language ${editor.document.languageId}`);
+		return;
+	}
+
 	// Prepare and register decorations
 	const boldedDecorations: Array<vscode.DecorationOptions> = [];
 	const linedDecorations: Array<vscode.DecorationOptions> = [];
@@ -201,16 +207,25 @@ interface MarkTokens {
 	range: vscode.Range;
 }
 
+const languages = ["javascript", "swift", "typescript"]; // TODO: Get this on-demand from config
+
 async function supportedLanguages(): Promise<Array<string>> {
-	const lang = ["javascript", "swift", "typescript"]; // TODO: Get this from config
-	if (lang.includes("*")) {
+	if (languages.includes("*")) {
 		return await vscode.languages.getLanguages();
 	}
-	return lang;
+	return languages;
 }
 
 const symbolProvider: vscode.DocumentSymbolProvider = {
 	provideDocumentSymbols(document, canceler) {
+		// Do nothing if this file isn't in a language we support
+		if (!languages.includes(document.languageId)) {
+			console.log(
+				`[provideDocumentSymbols] Skipping symbol search for language ${document.languageId}`
+			);
+			return [];
+		}
+
 		// Efficiency workaround: Avoid searching very large files
 		const lineCount = document.lineCount;
 		const lineLimit = get("lineLimit");
