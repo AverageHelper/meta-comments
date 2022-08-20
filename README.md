@@ -1,8 +1,16 @@
 # meta-comments
 
-## Features
-
 Xcode has this really neat organizational feature for some languages where specially-formatted comments will decorate the editor with dividers and bold formatting. This extension brings some of that functionality to VS Code.
+
+### Alternative Projects
+
+My work here is largely based on that of these projects below.
+
+[everdrone/mark-meta-comments](https://github.com/everdrone/mark-meta-comments) - Major design and implementation inspiration for this plugin.
+
+[snak1t/vscode-marks-to-outline](https://github.com/snak1t/vscode-marks-to-outline) - Highlights MARK comments and adds them to the outline. Has their own style, but more configurable at the moment.
+
+## Features
 
 ![Marked headings, divided markings, and block markings](/images/demo.gif)
 
@@ -53,3 +61,4 @@ See [CHANGELOG.md](/CHANGELOG.md).
 PRs are welcome and appreciated to help solve the following or any other issues you may have:
 
 - Highlighted blocks (using `MARK: ---`) have a visible underline.
+- Decorate the code minimap. There's an open issue at [microsoft/vscode#74843](https://github.com/microsoft/vscode/issues/74843).

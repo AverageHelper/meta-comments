@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 as far as makes sense for GUI software.
 
 ## [Unreleased]
-- Nothing, yet!
+- Added alternative projects to the README.
 
 ## [1.0.1] - 2022-08-20
 ### Fixed
