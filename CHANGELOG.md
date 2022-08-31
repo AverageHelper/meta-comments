@@ -5,8 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 as far as makes sense for GUI software.
 
-## [Unreleased]
-- Added alternative projects to the README.
+## [1.1.0] - 2022-08-31
+### Added
+- Added an option to parse files referenced in .gitignore
+- List alternative projects to the README.
+
+### Changed
+- No longer parse files referenced in .gitignore (by default)
 
 ## [1.0.1] - 2022-08-20
 ### Fixed
@@ -19,6 +24,7 @@ as far as makes sense for GUI software.
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/AverageHelper/meta-comments/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/AverageHelper/meta-comments/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/AverageHelper/meta-comments/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/AverageHelper/meta-comments/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/AverageHelper/meta-comments/releases/tag/v1.0.0

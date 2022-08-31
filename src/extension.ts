@@ -2,6 +2,10 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { get, reloadConfig } from "./config.js";
+import { join as joinPath } from "node:path";
+import { parse } from "parse-gitignore";
+import { readFileSync } from "node:fs";
+import { sync as glob } from "glob";
 
 // MARK: - TEST AREA
 
@@ -79,6 +83,13 @@ function decorate(editor: vscode.TextEditor): void {
 		isWholeLine: true,
 		backgroundColor: new vscode.ThemeColor(get("blockColor"))
 	});
+
+	const shouldParseIgnoredFiles = get("shouldParseIgnoredFiles");
+	if (!shouldParseIgnoredFiles && documentIsIgnoredInSourceControl(editor.document)) {
+		// Do nothing if this file is ignored in source control
+		console.log("[decorate] Skipping decorations for document ignored in source control");
+		return;
+	}
 
 	// Do nothing if this file isn't in a language we support
 	if (!languages.includes(editor.document.languageId)) {
@@ -216,12 +227,61 @@ async function supportedLanguages(): Promise<Array<string>> {
 	return languages;
 }
 
+function documentIsIgnoredInSourceControl(doc: vscode.TextDocument): boolean {
+	if (doc.uri.scheme !== "file") {
+		console.log(
+			"[documentIsIgnoredInSourceControl] Document is not local; assuming ignored in source control"
+		);
+		return true;
+	}
+
+	const folder = vscode.workspace.getWorkspaceFolder(doc.uri);
+	if (!folder) {
+		console.log(
+			"[documentIsIgnoredInSourceControl] Document not part of any workspace; assuming no source control"
+		);
+		return false;
+	}
+
+	// Find and parse .gitignore
+	const gitignorePath = joinPath(folder.uri.path, ".gitignore");
+	const parseResult = parse(readFileSync(gitignorePath));
+	const patternsToIgnore = parseResult.patterns;
+	for (const pattern of patternsToIgnore) {
+		// Get referenced files
+		const files = glob(pattern, {
+			cwd: folder.uri.path,
+			absolute: true
+		});
+
+		// If doc is referenced, we should ignore it
+		if (files.includes(doc.uri.path)) {
+			console.log(
+				"[documentIsIgnoredInSourceControl] Document is referenced in .gitignore; skipping"
+			);
+			return true;
+		}
+	}
+
+	console.log("[documentIsIgnoredInSourceControl] Document is not ignored in source control");
+	return false; // document is not ignored
+}
+
 const symbolProvider: vscode.DocumentSymbolProvider = {
 	provideDocumentSymbols(document, canceler) {
 		// Do nothing if this file isn't in a language we support
 		if (!languages.includes(document.languageId)) {
 			console.log(
 				`[provideDocumentSymbols] Skipping symbol search for language ${document.languageId}`
+			);
+			return [];
+		}
+
+		const shouldParseIgnoredFiles = get("shouldParseIgnoredFiles");
+		if (!shouldParseIgnoredFiles && documentIsIgnoredInSourceControl(document)) {
+			// Do nothing if this file is ignored in source control
+			console.log(
+				"[provideDocumentSymbols] Skipping symbol search for document ignored in source control"
 			);
 			return [];
 		}

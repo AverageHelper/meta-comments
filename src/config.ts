@@ -7,18 +7,19 @@ import * as vscode from "vscode";
 type BlockColor = "editor.inactiveSelectionBackground" | "editor.selectionBackground";
 
 const DEFAULT_CONFIG = {
-	/** We shouldn't deal with documents larger than this */
+	/** We shouldn't parse documents larger than this */
 	lineLimit: 10000,
 
 	/** Whether to also bold the comment start (`//`) */
 	shouldBoldCommentStart: false,
 
 	/** The background color between heavy block (`---`) marks */
-	blockColor: "editor.inactiveSelectionBackground" as BlockColor
-};
-// MARK: ---
+	blockColor: "editor.inactiveSelectionBackground" as BlockColor,
 
-// MARK: - Functions
+	/** We shouldn't parse files that source control ignores, unless the user says so */
+	shouldParseIgnoredFiles: false
+};
+// MARK: --- Functions
 
 // MARK: reloadConfig
 
