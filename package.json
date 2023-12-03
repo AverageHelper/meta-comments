@@ -5,7 +5,7 @@
 	"publisher": "average",
 	"version": "1.1.0",
 	"repository": {
-		"url": "https://github.com/AverageHelper/meta-comments"
+		"url": "https://codeberg.org/AverageHelper/meta-comments"
 	},
 	"engines": {
 		"vscode": "^1.70.0"
