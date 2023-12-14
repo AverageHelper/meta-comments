@@ -24,7 +24,7 @@ as far as makes sense for GUI software.
 ### Added
 - Initial release
 
-[Unreleased]: https://codeberg.org/AverageHelper/meta-comments/compare/v1.1.0...HEAD
-[1.1.0]: https://codeberg.org/AverageHelper/meta-comments/compare/v1.0.1...v1.1.0
-[1.0.1]: https://codeberg.org/AverageHelper/meta-comments/compare/v1.0.0...v1.0.1
-[1.0.0]: https://codeberg.org/AverageHelper/meta-comments/releases/tag/v1.0.0
+[Unreleased]: https://git.average.name/AverageHelper/meta-comments/compare/v1.1.0...HEAD
+[1.1.0]: https://git.average.name/AverageHelper/meta-comments/compare/v1.0.1...v1.1.0
+[1.0.1]: https://git.average.name/AverageHelper/meta-comments/compare/v1.0.0...v1.0.1
+[1.0.0]: https://git.average.name/AverageHelper/meta-comments/releases/tag/v1.0.0
